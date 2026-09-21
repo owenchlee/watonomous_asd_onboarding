@@ -32,10 +32,10 @@ void MapMemoryNode::updateMap() {
   if (should_update_map_) {
     //pass in the most rcent costmap and the robots position when it crossed the 1.5m threshold
     map_memory_.updateMap(latest_costmap_, last_x_, last_y_);
-    //publish to map
-    map_memory_pub_->publish(map_memory_.getMap());
     should_update_map_ = false;
   }
+  //publish to map
+  map_memory_pub_->publish(map_memory_.getMap());
 }
 
 int main(int argc, char ** argv)

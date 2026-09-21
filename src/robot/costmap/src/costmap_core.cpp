@@ -7,7 +7,7 @@ namespace robot
 
 CostmapCore::CostmapCore(const rclcpp::Logger& logger) : 
     //set starting values
-    logger_(logger), resolution_(0.1), width_(200), height_(200), origin_x_(-10.0), origin_y_(-10.0), inflation_radius_(1.0), max_cost_(100) 
+    logger_(logger), resolution_(0.1), width_(200), height_(200), origin_x_(-10.0), origin_y_(-10.0), inflation_radius_(0.3), max_cost_(100) 
 {
     initializeCostmap();
 }
