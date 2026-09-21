@@ -1,4 +1,5 @@
 #include "map_memory_core.hpp"
+#include <cmath>
 
 namespace robot
 {
@@ -7,6 +8,7 @@ MapMemoryCore::MapMemoryCore(const rclcpp::Logger& logger)
   : logger_(logger), resolution_(0.1), width_(300), height_(300), origin_x_(-15.0), origin_y_(-15.0)
 {
   //fill in global_map_'s info 
+  global_map_.header.frame_id = "sim_world";
   global_map_.info.resolution = resolution_;
   global_map_.info.width = width_;
   global_map_.info.height = height_;
@@ -16,7 +18,9 @@ MapMemoryCore::MapMemoryCore(const rclcpp::Logger& logger)
   global_map_.data.assign(width_ * height_, -1);
 }
 
-void MapMemoryCore::updateMap(const nav_msgs::msg::OccupancyGrid& costmap, double robot_x, double robot_y) {
+void MapMemoryCore::updateMap(const nav_msgs::msg::OccupancyGrid& costmap, double robot_x, double robot_y, double robot_yaw) {
+  double cos_yaw = std::cos(robot_yaw);
+  double sin_yaw = std::sin(robot_yaw);
   //pulls in data out of costmap's info fields
   int costmap_width = costmap.info.width;
   int costmap_height = costmap.info.height;
@@ -36,9 +40,13 @@ void MapMemoryCore::updateMap(const nav_msgs::msg::OccupancyGrid& costmap, doubl
       double local_x = costmap_origin_x + x * costmap_resolution;
       double local_y = costmap_origin_y + y * costmap_resolution;
 
+      //rotate by robot heading before translating, so it lands in the right spot
+      double rotated_x = local_x * cos_yaw - local_y * sin_yaw;
+      double rotated_y = local_x * sin_yaw + local_y * cos_yaw;
+
       //where is point in the actual world?
-      double world_x = robot_x + local_x;
-      double world_y = robot_y + local_y;
+      double world_x = robot_x + rotated_x;
+      double world_y = robot_y + rotated_y;
 
       //which cell in my map array does this world position correspond to?
       int global_x = static_cast<int>((world_x - origin_x_) / resolution_);

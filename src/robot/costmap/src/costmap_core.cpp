@@ -7,16 +7,21 @@ namespace robot
 
 CostmapCore::CostmapCore(const rclcpp::Logger& logger) : 
     //set starting values
-    logger_(logger), resolution_(0.1), width_(200), height_(200), origin_x_(-10.0), origin_y_(-10.0), inflation_radius_(0.3), max_cost_(100) 
+    //bumped inflation radius up so the robot's chassis actually clears obstacles
+    logger_(logger), resolution_(0.1), width_(200), height_(200), origin_x_(-10.0), origin_y_(-10.0), inflation_radius_(1.0), max_cost_(100)
 {
     initializeCostmap();
 }
 
 //defining costmap function
 void CostmapCore::initializeCostmap() {
-    // fill every slot with a value, slots are determined by height and width 
+    // fill every slot with a value, slots are determined by height and width
     //value is 0 for free space
     grid_.assign(width_ * height_, 0);
+}
+
+void CostmapCore::resetGrid() {
+    initializeCostmap();
 }
 
 void CostmapCore::convertToGrid(double range, double angle, int& x_grid, int& y_grid) {

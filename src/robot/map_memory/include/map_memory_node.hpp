@@ -22,7 +22,9 @@ class MapMemoryNode : public rclcpp::Node {
     rclcpp::TimerBase::SharedPtr timer_;
     double last_x_;
     double last_y_;
+    double last_yaw_;
     bool should_update_map_;
+    bool has_odom_;
     nav_msgs::msg::OccupancyGrid latest_costmap_;
 };
 

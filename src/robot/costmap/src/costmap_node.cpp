@@ -13,6 +13,8 @@ CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->
  
 // Add the lasercallback function here
 void CostmapNode::laserCallback(const sensor_msgs::msg::LaserScan::SharedPtr scan) {
+  //clear old obstacles so they don't linger after the robot moves
+  costmap_.resetGrid();
   //runs once for every distance
   for (size_t i = 0; i < scan->ranges.size(); i++) {
     //calculate the specific angle of that reading
@@ -31,8 +33,8 @@ void CostmapNode::laserCallback(const sensor_msgs::msg::LaserScan::SharedPtr sca
   auto message = nav_msgs::msg::OccupancyGrid();
   // timestamp it with the current time
   message.header.stamp = this->now();
-  // tell other nodes which coordinate frame this data is in
-  message.header.frame_id = "sim_world";
+  // grid is relative to the robot, not the world, so it needs the robot's frame
+  message.header.frame_id = "robot/chassis/lidar";
   // fill in the grid's metadata, pulled from the core's getters
   message.info.resolution = costmap_.getResolution();
   message.info.width = costmap_.getWidth();

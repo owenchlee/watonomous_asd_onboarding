@@ -12,7 +12,7 @@ class MapMemoryCore {
   public:
     explicit MapMemoryCore(const rclcpp::Logger& logger);
 
-    void updateMap(const nav_msgs::msg::OccupancyGrid& costmap, double robot_x, double robot_y);
+    void updateMap(const nav_msgs::msg::OccupancyGrid& costmap, double robot_x, double robot_y, double robot_yaw);
     nav_msgs::msg::OccupancyGrid getMap() const;
 
   private:

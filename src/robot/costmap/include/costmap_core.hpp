@@ -15,6 +15,8 @@ class CostmapCore {
     void convertToGrid(double range, double angle, int& x_grid, int& y_grid);
     void markObstacle(int x_grid, int y_grid);
     void inflateObstacles();
+    //clears the grid back to all-free, call before each new scan
+    void resetGrid();
     //getters to allow origin values to be read outside of costmap core
     std::vector<int8_t> getGrid() const;
     int getWidth() const;
